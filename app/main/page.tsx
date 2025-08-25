@@ -1,10 +1,13 @@
+import { Trash2 } from "lucide-react";
+import { cookies } from "next/headers";
+import Link from "next/link";
+import prettyBytes from "pretty-bytes";
+import DbCard from "@/components/db-card";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { mongoClient } from "@/lib/mongodb";
 import type { BuildInfo } from "@/types/build-info";
 import { getDatabasesWithCollections } from "@/utils/getDatabasesWithCollections";
-import { cookies } from "next/headers";
-import Link from "next/link";
-import prettyBytes from "pretty-bytes";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
@@ -33,7 +36,6 @@ export default async function Home() {
           <CardHeader className="text-xl font-semibold">
             Build information
           </CardHeader>
-
           {buildInfo ? (
             <CardContent className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
               <div>
@@ -73,21 +75,12 @@ export default async function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full h-full">
             {databases.length > 0 ? (
               databases.map((d) => (
-                <Link key={d.name} href={`/main/${d.name}`}>
-                  <Card className="group flex flex-col justify-between h-full transition-all hover:shadow-md hover:border-primary">
-                    <CardHeader className="font-medium text-base">
-                      {d.name}
-                    </CardHeader>
-                    <CardContent className="space-y-1">
-                      <div className="text-xs text-muted-foreground">
-                        Collections: {d.collections}
-                      </div>
-                      <div className="text-sm font-medium">
-                        {prettyBytes(d.sizeOnDisk)}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <DbCard
+                  key={d.name}
+                  collections={d.collections}
+                  name={d.name}
+                  sizeOnDisk={d.sizeOnDisk}
+                />
               ))
             ) : (
               <p className="text-sm text-muted-foreground text-center col-span-full">

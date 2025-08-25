@@ -3,6 +3,7 @@ import { Open_Sans } from "next/font/google";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { ThemeProvider } from "@/provider/theme-provider";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
@@ -25,6 +26,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light">
           <ThemeSwitch />
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
