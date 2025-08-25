@@ -1,7 +1,5 @@
 import { cookies } from "next/headers";
-import Link from "next/link";
-import prettyBytes from "pretty-bytes";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import CollectionCard from "@/components/collection-card";
 import { mongoClient } from "@/lib/mongodb";
 
 export default async function Page({
@@ -42,21 +40,13 @@ export default async function Page({
       {collectionsWithStats.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full h-full">
           {collectionsWithStats.map((c) => (
-            <Link key={c.name} href={`/main/${databaseName}/${c.name}`}>
-              <Card className="group flex flex-col justify-between h-full transition-all hover:shadow-md hover:border-primary">
-                <CardHeader className="font-medium text-base">
-                  {c.name}
-                </CardHeader>
-                <CardContent className="space-y-1">
-                  <div className="text-xs text-muted-foreground">
-                    Documents: {c.count}
-                  </div>
-                  <div className="text-sm font-medium">
-                    Storage: {prettyBytes(c.storageSize)}
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+            <CollectionCard
+              key={c.name}
+              collectionName={c.name}
+              count={c.count}
+              dbName={databaseName}
+              storageSize={c.storageSize}
+            />
           ))}
         </div>
       ) : (

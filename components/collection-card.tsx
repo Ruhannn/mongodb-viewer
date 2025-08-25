@@ -3,7 +3,7 @@ import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import prettyBytes from "pretty-bytes";
 import { toast } from "sonner";
-import { handleDbDelete } from "@/actions/deleteDb";
+import { handleDeleteCollection } from "@/actions/deleteCollection";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,12 +19,18 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 
 type Props = {
-  name: string;
-  collections: string;
-  sizeOnDisk: number;
+  dbName: string;
+  collectionName: string;
+  storageSize: number;
+  count: number;
 };
 
-export default function DbCard({ name, collections, sizeOnDisk }: Props) {
+export default function CollectionCard({
+  collectionName,
+  dbName,
+  count,
+  storageSize,
+}: Props) {
   const router = useRouter();
   return (
     <AlertDialog>
@@ -32,7 +38,7 @@ export default function DbCard({ name, collections, sizeOnDisk }: Props) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete the database <b>{name}</b>.
+            This will permanently delete the Collection <b>{collectionName}</b>.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -40,13 +46,13 @@ export default function DbCard({ name, collections, sizeOnDisk }: Props) {
           <AlertDialogAction
             onClick={async () => {
               try {
-                await handleDbDelete(name);
+                await handleDeleteCollection(dbName, collectionName);
                 toast.success(
-                  `The database "${name}" was deleted successfully.`,
+                  `The collection "${collectionName}" was deleted successfully.`,
                 );
               } catch (error) {
                 console.error(error);
-                toast.error("Error deleting database");
+                toast.error("Error deleting collection");
               }
             }}
           >
@@ -57,9 +63,11 @@ export default function DbCard({ name, collections, sizeOnDisk }: Props) {
 
       <Card
         className="group flex flex-col justify-between h-full transition-all hover:shadow-md hover:border-primary relative cursor-pointer"
-        onClick={() => router.push(`/main/${name}`)}
+        onClick={() => router.push(`/main/${dbName}/${collectionName}`)}
       >
-        <CardHeader className="font-medium text-base">{name}</CardHeader>
+        <CardHeader className="font-medium text-base">
+          {collectionName}
+        </CardHeader>
         {/* delete */}
         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-50 hover:opacity-100 transition-all">
           <AlertDialogTrigger asChild onClick={(e) => e.stopPropagation()}>
@@ -70,9 +78,11 @@ export default function DbCard({ name, collections, sizeOnDisk }: Props) {
         </div>
         <CardContent className="space-y-1">
           <div className="text-xs text-muted-foreground">
-            Collections: {collections}
+            Documents: {count}
           </div>
-          <div className="text-sm font-medium">{prettyBytes(sizeOnDisk)}</div>
+          <div className="text-sm font-medium">
+            Storage: {prettyBytes(storageSize)}
+          </div>
         </CardContent>
       </Card>
     </AlertDialog>
