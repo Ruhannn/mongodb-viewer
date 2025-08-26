@@ -1,9 +1,9 @@
 "use server";
 
 import { mongoClient } from "@/lib/mongodb";
+import { getIronSessionData } from "@/utils/getIronSessionData";
 import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 
 export async function updateDocument({
   databaseName,
@@ -19,8 +19,7 @@ export async function updateDocument({
   // biome-ignore lint/suspicious/noExplicitAny: idk
   value: any;
 }) {
-  const cookieStore = await cookies();
-  const uri = cookieStore.get("mongoURI")?.value;
+  const uri = await getIronSessionData();
 
   const database = (await mongoClient(uri!)).db(databaseName);
 

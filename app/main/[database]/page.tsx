@@ -1,14 +1,14 @@
-import { cookies } from "next/headers";
 import CollectionCard from "@/components/collection-card";
 import { mongoClient } from "@/lib/mongodb";
+import { getIronSessionData } from "@/utils/getIronSessionData";
+
 
 export default async function Page({
   params,
 }: {
   params: Promise<{ database: string }>;
 }) {
-  const cookieStore = cookies();
-  const uri = (await cookieStore).get("mongoURI")?.value;
+  const uri = (await getIronSessionData())
 
   if (!uri) {
     return <p>no uri</p>;
@@ -27,7 +27,7 @@ export default async function Page({
         size: stats.size,
         storageSize: stats.storageSize,
       };
-    }),
+    })
   );
 
   return (

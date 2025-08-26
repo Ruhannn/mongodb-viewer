@@ -1,11 +1,12 @@
 "use server";
 
 import { mongoClient } from "@/lib/mongodb";
-import { cookies } from "next/headers";
+import { getIronSessionData } from "@/utils/getIronSessionData";
+
 
 export async function executeMongoCommand(code: string) {
-  const cookieStore = await cookies();
-  const uri = cookieStore.get("mongoURI")?.value;
+  const uri = await getIronSessionData();
+
   const client = await mongoClient(uri!);
   const db = client.db("kamilytics");
 

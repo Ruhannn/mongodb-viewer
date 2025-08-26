@@ -1,5 +1,3 @@
-import { cookies } from "next/headers";
-import prettyBytes from "pretty-bytes";
 import { EditableCell } from "@/components/editable-cell";
 import {
   Pagination,
@@ -11,6 +9,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { mongoClient } from "@/lib/mongodb";
+import { getIronSessionData } from "@/utils/getIronSessionData";
+import prettyBytes from "pretty-bytes";
 
 export default async function Page({
   params,
@@ -19,8 +19,7 @@ export default async function Page({
   params: Promise<{ database: string; collection: string }>;
   searchParams: Promise<{ page?: string }>;
 }) {
-  const cookieStore = cookies();
-  const uri = (await cookieStore).get("mongoURI")?.value;
+  const uri = await getIronSessionData();
 
   if (!uri) {
     return <p>no uri</p>;
@@ -112,7 +111,9 @@ export default async function Page({
                 <tr className="border-b bg-muted/50">
                   {documents[0] &&
                     Object.keys(documents[0]).map((key) => (
-                      <th key={key} className="px-6 py-4 text-left">
+                      <th
+                        key={key}
+                        className="px-6 py-4 text-left">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-semibold text-foreground">
                             {key}
@@ -131,13 +132,11 @@ export default async function Page({
                 {documents.map((doc, i) => (
                   <tr
                     key={doc._id?.toString() || i}
-                    className="hover:bg-muted/30 transition-colors"
-                  >
+                    className="hover:bg-muted/30 transition-colors">
                     {Object.entries(doc).map(([key, val]) => (
                       <td
                         key={`${doc._id?.toString() || i}-${key}`}
-                        className="px-6 py-4"
-                      >
+                        className="px-6 py-4">
                         <EditableCell
                           documentId={doc._id?.toString()}
                           field={key}
@@ -179,8 +178,7 @@ export default async function Page({
                       <PaginationItem>
                         <PaginationLink
                           href="?page=1"
-                          className="hover:bg-muted"
-                        >
+                          className="hover:bg-muted">
                           1
                         </PaginationLink>
                       </PaginationItem>
@@ -208,7 +206,7 @@ export default async function Page({
 
                     const pageNumbers = Array.from(
                       { length: end - start + 1 },
-                      (_, i) => start + i,
+                      (_, i) => start + i
                     );
 
                     return pageNumbers.map((pageNum) => (
@@ -220,8 +218,7 @@ export default async function Page({
                             pageNum === currentPage
                               ? "bg-primary text-primary-foreground"
                               : "hover:bg-muted"
-                          }
-                        >
+                          }>
                           {pageNum}
                         </PaginationLink>
                       </PaginationItem>
@@ -238,8 +235,7 @@ export default async function Page({
                       <PaginationItem>
                         <PaginationLink
                           href={`?page=${totalPages}`}
-                          className="hover:bg-muted"
-                        >
+                          className="hover:bg-muted">
                           {totalPages}
                         </PaginationLink>
                       </PaginationItem>

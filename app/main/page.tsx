@@ -1,19 +1,16 @@
-import { Trash2 } from "lucide-react";
-import { cookies } from "next/headers";
-import Link from "next/link";
-import prettyBytes from "pretty-bytes";
 import DbCard from "@/components/db-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { mongoClient } from "@/lib/mongodb";
 import type { BuildInfo } from "@/types/build-info";
 import { getDatabasesWithCollections } from "@/utils/getDatabasesWithCollections";
+import { getIronSessionData } from "@/utils/getIronSessionData";
+import prettyBytes from "pretty-bytes";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   try {
-    const cookieStore = cookies();
-    const uri = (await cookieStore).get("mongoURI")?.value;
+    const uri = await getIronSessionData();
 
     if (!uri) {
       return <p>no uri</p>;

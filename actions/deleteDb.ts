@@ -1,13 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 import { mongoClient } from "@/lib/mongodb";
+import { getIronSessionData } from "@/utils/getIronSessionData";
+import { revalidatePath } from "next/cache";
 
 export async function handleDbDelete(dbName: string) {
   try {
-    const cookieStore = await cookies();
-    const uri = cookieStore.get("mongoURI")?.value;
+    const uri = await getIronSessionData();
 
     const client = await mongoClient(uri!);
     const result = await client.db(dbName).dropDatabase();
