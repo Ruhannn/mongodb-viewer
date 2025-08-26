@@ -1,5 +1,7 @@
+import prettyBytes from "pretty-bytes";
+
 import { EditableCell } from "@/components/editable-cell";
-import { TextAnimate } from "@/components/text/SplitText";
+import { TextAnimate } from "@/components/text/text-animate";
 import { AnimatedGroup } from "@/components/ui/animated-group";
 import {
   Pagination,
@@ -11,8 +13,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { mongoClient } from "@/lib/mongodb";
-import { getIronSessionData } from "@/utils/getIronSessionData";
-import prettyBytes from "pretty-bytes";
+import { getIronSessionData } from "@/utils/get-iron-session-data";
 
 export default async function Page({
   params,
@@ -57,14 +58,16 @@ export default async function Page({
             animation="scaleUp"
             by="text"
             once
-            className="text-3xl font-bold text-foreground mb-2">
+            className="text-3xl font-bold text-foreground mb-2"
+          >
             {collectionName}
           </TextAnimate>
           <TextAnimate
             animation="scaleUp"
             by="text"
             once
-            className="text-muted-foreground text-lg">
+            className="text-muted-foreground text-lg"
+          >
             {`Database: ${databaseName}`}
           </TextAnimate>
         </div>
@@ -94,7 +97,8 @@ export default async function Page({
                 },
               },
             },
-          }}>
+          }}
+        >
           <div className="bg-card border rounded-lg p-4 shadow-sm">
             <p className="text-sm font-medium text-muted-foreground">
               Documents
@@ -124,15 +128,24 @@ export default async function Page({
               Current Page
             </p>
             <p className="text-2xl font-bold text-foreground">
-              {currentPage} of {totalPages}
+              {currentPage}
+              {" "}
+              of
+              {totalPages}
             </p>
           </div>
         </AnimatedGroup>
 
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-foreground mb-2">
-            Documents {skip + 1}-
-            {Math.min(skip + documentsPerPage, totalDocuments)} of{" "}
+            Documents
+            {" "}
+            {skip + 1}
+            -
+            {Math.min(skip + documentsPerPage, totalDocuments)}
+            {" "}
+            of
+            {" "}
             {totalDocuments}
           </h2>
           <div className="h-px bg-border"></div>
@@ -143,11 +156,12 @@ export default async function Page({
             <table className="w-full">
               <thead>
                 <tr className="border-b bg-muted/50">
-                  {documents[0] &&
-                    Object.keys(documents[0]).map((key) => (
+                  {documents[0]
+                    && Object.keys(documents[0]).map(key => (
                       <th
                         key={key}
-                        className="px-6 py-4 text-left">
+                        className="px-6 py-4 text-left"
+                      >
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-semibold text-foreground">
                             {key}
@@ -166,11 +180,13 @@ export default async function Page({
                 {documents.map((doc, i) => (
                   <tr
                     key={doc._id?.toString() || i}
-                    className="hover:bg-muted/30 transition-colors">
+                    className="hover:bg-muted/30 transition-colors"
+                  >
                     {Object.entries(doc).map(([key, val]) => (
                       <td
                         key={`${doc._id?.toString() || i}-${key}`}
-                        className="px-6 py-4">
+                        className="px-6 py-4"
+                      >
                         <EditableCell
                           documentId={doc._id?.toString()}
                           field={key}
@@ -212,7 +228,8 @@ export default async function Page({
                       <PaginationItem>
                         <PaginationLink
                           href="?page=1"
-                          className="hover:bg-muted">
+                          className="hover:bg-muted"
+                        >
                           1
                         </PaginationLink>
                       </PaginationItem>
@@ -240,10 +257,10 @@ export default async function Page({
 
                     const pageNumbers = Array.from(
                       { length: end - start + 1 },
-                      (_, i) => start + i
+                      (_, i) => start + i,
                     );
 
-                    return pageNumbers.map((pageNum) => (
+                    return pageNumbers.map(pageNum => (
                       <PaginationItem key={pageNum}>
                         <PaginationLink
                           href={`?page=${pageNum}`}
@@ -252,7 +269,8 @@ export default async function Page({
                             pageNum === currentPage
                               ? "bg-primary text-primary-foreground"
                               : "hover:bg-muted"
-                          }>
+                          }
+                        >
                           {pageNum}
                         </PaginationLink>
                       </PaginationItem>
@@ -269,7 +287,8 @@ export default async function Page({
                       <PaginationItem>
                         <PaginationLink
                           href={`?page=${totalPages}`}
-                          className="hover:bg-muted">
+                          className="hover:bg-muted"
+                        >
                           {totalPages}
                         </PaginationLink>
                       </PaginationItem>

@@ -2,19 +2,19 @@
 
 import { Check, Edit2, X } from "lucide-react";
 import { useState, useTransition } from "react";
-import { updateDocument } from "@/actions/updateDocument";
+
+import { updateDocument } from "@/actions/update-document";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-interface EditableCellProps {
+type EditableCellProps = {
   documentId: string | undefined;
   field: string;
-  // biome-ignore lint/suspicious/noExplicitAny: idk
   value: any;
   databaseName: string;
   collectionName: string;
-}
+};
 
 export function EditableCell({
   documentId,
@@ -28,7 +28,8 @@ export function EditableCell({
   const [isPending, startTransition] = useTransition();
 
   const handleSave = () => {
-    if (!documentId) return;
+    if (!documentId)
+      return;
 
     startTransition(async () => {
       try {
@@ -41,7 +42,8 @@ export function EditableCell({
         });
 
         setIsEditing(false);
-      } catch (error) {
+      }
+      catch (error) {
         console.error("Error updating document:", error);
       }
     });
@@ -61,21 +63,23 @@ export function EditableCell({
 
     return (
       <div className="flex items-center gap-1 min-w-0">
-        {isLongText ? (
-          <Textarea
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            className="min-h-[60px] text-xs"
-            disabled={isPending}
-          />
-        ) : (
-          <Input
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            className="text-xs"
-            disabled={isPending}
-          />
-        )}
+        {isLongText
+          ? (
+              <Textarea
+                value={editValue}
+                onChange={e => setEditValue(e.target.value)}
+                className="min-h-[60px] text-xs"
+                disabled={isPending}
+              />
+            )
+          : (
+              <Input
+                value={editValue}
+                onChange={e => setEditValue(e.target.value)}
+                className="text-xs"
+                disabled={isPending}
+              />
+            )}
         <div className="flex flex-col gap-1">
           <Button
             size="sm"

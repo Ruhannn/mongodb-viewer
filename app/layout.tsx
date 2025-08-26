@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
+
+import { Open_Sans } from "next/font/google";
+
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/provider/theme-provider";
-import type { Metadata } from "next";
-import { Open_Sans } from "next/font/google";
+
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -23,12 +26,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      suppressHydrationWarning>
+      suppressHydrationWarning
+    >
       <body className={`${openSans.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          disableTransitionOnChange>
+          disableTransitionOnChange
+        >
           <ThemeSwitch />
 
           {children}

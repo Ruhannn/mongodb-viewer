@@ -2,17 +2,17 @@
 import { Mesh, Program, Renderer, Triangle } from "ogl";
 import { useEffect, useRef, useState } from "react";
 
-export type RaysOrigin =
-  | "top-center"
-  | "top-left"
-  | "top-right"
-  | "right"
-  | "left"
-  | "bottom-center"
-  | "bottom-right"
-  | "bottom-left";
+export type RaysOrigin
+  = | "top-center"
+    | "top-left"
+    | "top-right"
+    | "right"
+    | "left"
+    | "bottom-center"
+    | "bottom-right"
+    | "bottom-left";
 
-interface LightRaysProps {
+type LightRaysProps = {
   raysOrigin?: RaysOrigin;
   raysColor?: string;
   raysSpeed?: number;
@@ -26,26 +26,22 @@ interface LightRaysProps {
   noiseAmount?: number;
   distortion?: number;
   className?: string;
-}
+};
 
 const DEFAULT_COLOR = "#ffffff";
 
-const hexToRgb = (hex: string): [number, number, number] => {
+function hexToRgb(hex: string): [number, number, number] {
   const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return m
     ? [
-        parseInt(m[1], 16) / 255,
-        parseInt(m[2], 16) / 255,
-        parseInt(m[3], 16) / 255,
+        Number.parseInt(m[1], 16) / 255,
+        Number.parseInt(m[2], 16) / 255,
+        Number.parseInt(m[3], 16) / 255,
       ]
     : [1, 1, 1];
-};
+}
 
-const getAnchorAndDir = (
-  origin: RaysOrigin,
-  w: number,
-  h: number
-): { anchor: [number, number]; dir: [number, number] } => {
+function getAnchorAndDir(origin: RaysOrigin, w: number, h: number): { anchor: [number, number]; dir: [number, number] } {
   const outside = 0.2;
   switch (origin) {
     case "top-left":
@@ -65,7 +61,7 @@ const getAnchorAndDir = (
     default: // "top-center"
       return { anchor: [0.5 * w, -outside * h], dir: [0, 1] };
   }
-};
+}
 
 const LightRays: React.FC<LightRaysProps> = ({
   raysOrigin = "top-center",
@@ -94,14 +90,15 @@ const LightRays: React.FC<LightRaysProps> = ({
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current)
+      return;
 
     observerRef.current = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
         setIsVisible(entry.isIntersecting);
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     observerRef.current.observe(containerRef.current);
@@ -115,7 +112,8 @@ const LightRays: React.FC<LightRaysProps> = ({
   }, []);
 
   useEffect(() => {
-    if (!isVisible || !containerRef.current) return;
+    if (!isVisible || !containerRef.current)
+      return;
 
     if (cleanupFunctionRef.current) {
       cleanupFunctionRef.current();
@@ -123,11 +121,13 @@ const LightRays: React.FC<LightRaysProps> = ({
     }
 
     const initializeWebGL = async () => {
-      if (!containerRef.current) return;
+      if (!containerRef.current)
+        return;
 
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise(resolve => setTimeout(resolve, 10));
 
-      if (!containerRef.current) return;
+      if (!containerRef.current)
+        return;
 
       const renderer = new Renderer({
         dpr: Math.min(window.devicePixelRatio, 2),
@@ -277,7 +277,8 @@ void main() {
       meshRef.current = mesh;
 
       const updatePlacement = () => {
-        if (!containerRef.current || !renderer) return;
+        if (!containerRef.current || !renderer)
+          return;
 
         renderer.dpr = Math.min(window.devicePixelRatio, 2);
 
@@ -305,12 +306,12 @@ void main() {
         if (followMouse && mouseInfluence > 0.0) {
           const smoothing = 0.92;
 
-          smoothMouseRef.current.x =
-            smoothMouseRef.current.x * smoothing +
-            mouseRef.current.x * (1 - smoothing);
-          smoothMouseRef.current.y =
-            smoothMouseRef.current.y * smoothing +
-            mouseRef.current.y * (1 - smoothing);
+          smoothMouseRef.current.x
+            = smoothMouseRef.current.x * smoothing
+              + mouseRef.current.x * (1 - smoothing);
+          smoothMouseRef.current.y
+            = smoothMouseRef.current.y * smoothing
+              + mouseRef.current.y * (1 - smoothing);
 
           uniforms.mousePos.value = [
             smoothMouseRef.current.x,
@@ -321,9 +322,9 @@ void main() {
         try {
           renderer.render({ scene: mesh });
           animationIdRef.current = requestAnimationFrame(loop);
-        } catch (error) {
+        }
+        catch (error) {
           console.warn("WebGL rendering error:", error);
-          return;
         }
       };
 
@@ -342,8 +343,8 @@ void main() {
         if (renderer) {
           try {
             const canvas = renderer.gl.canvas;
-            const loseContextExt =
-              renderer.gl.getExtension("WEBGL_lose_context");
+            const loseContextExt
+              = renderer.gl.getExtension("WEBGL_lose_context");
             if (loseContextExt) {
               loseContextExt.loseContext();
             }
@@ -351,7 +352,8 @@ void main() {
             if (canvas && canvas.parentNode) {
               canvas.parentNode.removeChild(canvas);
             }
-          } catch (error) {
+          }
+          catch (error) {
             console.warn("Error during WebGL cleanup:", error);
           }
         }
@@ -425,7 +427,8 @@ void main() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current || !rendererRef.current) return;
+      if (!containerRef.current || !rendererRef.current)
+        return;
       const rect = containerRef.current.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width;
       const y = (e.clientY - rect.top) / rect.height;

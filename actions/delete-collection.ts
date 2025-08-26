@@ -1,8 +1,9 @@
 "use server";
 
-import { mongoClient } from "@/lib/mongodb";
-import { getIronSessionData } from "@/utils/getIronSessionData";
 import { revalidatePath } from "next/cache";
+
+import { mongoClient } from "@/lib/mongodb";
+import { getIronSessionData } from "@/utils/get-iron-session-data";
 
 export async function handleDeleteCollection(
   collectionName: string,
@@ -19,7 +20,8 @@ export async function handleDeleteCollection(
     }
 
     revalidatePath(`/main/${dbName}/${collectionName}`);
-  } catch (error) {
+  }
+  catch (error) {
     console.error("Collection deletion error:", error);
 
     throw new Error("Unknown error occurred while deleting collection.");

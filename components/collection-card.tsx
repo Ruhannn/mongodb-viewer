@@ -1,10 +1,12 @@
 "use client";
-import { handleDeleteCollection } from "@/actions/deleteCollection";
 import { motion } from "framer-motion";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import prettyBytes from "pretty-bytes";
 import { toast } from "sonner";
+
+import { handleDeleteCollection } from "@/actions/delete-collection";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,7 +44,10 @@ export default function CollectionCard({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete the Collection <b>{collectionName}</b>.
+            This will permanently delete the Collection
+            {" "}
+            <b>{collectionName}</b>
+            .
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -52,13 +57,15 @@ export default function CollectionCard({
               try {
                 await handleDeleteCollection(dbName, collectionName);
                 toast.success(
-                  `The collection "${collectionName}" was deleted successfully.`
+                  `The collection "${collectionName}" was deleted successfully.`,
                 );
-              } catch (error) {
+              }
+              catch (error) {
                 console.error(error);
                 toast.error("Error deleting collection");
               }
-            }}>
+            }}
+          >
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>
@@ -66,7 +73,8 @@ export default function CollectionCard({
 
       <MotionCard
         className="group flex flex-col justify-between h-full transition-all hover:shadow-md hover:border-primary relative cursor-pointer"
-        onClick={() => router.push(`/main/${dbName}/${collectionName}`)}>
+        onClick={() => router.push(`/main/${dbName}/${collectionName}`)}
+      >
         <CardHeader className="font-medium text-base">
           {collectionName}
         </CardHeader>
@@ -74,20 +82,26 @@ export default function CollectionCard({
         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-50 hover:opacity-100 transition-all">
           <AlertDialogTrigger
             asChild
-            onClick={(e) => e.stopPropagation()}>
+            onClick={e => e.stopPropagation()}
+          >
             <Button
-              size={"icon"}
-              variant={"destructive"}>
+              size="icon"
+              variant="destructive"
+            >
               <Trash2 />
             </Button>
           </AlertDialogTrigger>
         </div>
         <CardContent className="space-y-1">
           <div className="text-xs text-muted-foreground">
-            Documents: {count}
+            Documents:
+            {" "}
+            {count}
           </div>
           <div className="text-sm font-medium">
-            Storage: {prettyBytes(storageSize)}
+            Storage:
+            {" "}
+            {prettyBytes(storageSize)}
           </div>
         </CardContent>
       </MotionCard>

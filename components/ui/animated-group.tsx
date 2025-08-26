@@ -1,18 +1,21 @@
 "use client";
-import { motion, type Variants } from "motion/react";
-import React, { JSX, type ReactNode } from "react";
+import type { Variants } from "framer-motion";
+import type { JSX, ReactNode } from "react";
 
-export type PresetType =
-  | "fade"
-  | "slide"
-  | "scale"
-  | "blur"
-  | "blur-slide"
-  | "zoom"
-  | "flip"
-  | "bounce"
-  | "rotate"
-  | "swing";
+import { motion } from "framer-motion";
+import React from "react";
+
+export type PresetType
+  = | "fade"
+    | "slide"
+    | "scale"
+    | "blur"
+    | "blur-slide"
+    | "zoom"
+    | "flip"
+    | "bounce"
+    | "rotate"
+    | "swing";
 
 export type AnimatedGroupProps = {
   children: ReactNode;
@@ -40,16 +43,16 @@ const defaultItemVariants: Variants = {
 };
 
 const presetVariants: Record<PresetType, Variants> = {
-  fade: {},
-  slide: {
+  "fade": {},
+  "slide": {
     hidden: { y: 20 },
     visible: { y: 0 },
   },
-  scale: {
+  "scale": {
     hidden: { scale: 0.8 },
     visible: { scale: 1 },
   },
-  blur: {
+  "blur": {
     hidden: { filter: "blur(4px)" },
     visible: { filter: "blur(0px)" },
   },
@@ -57,35 +60,35 @@ const presetVariants: Record<PresetType, Variants> = {
     hidden: { filter: "blur(4px)", y: 20 },
     visible: { filter: "blur(0px)", y: 0 },
   },
-  zoom: {
+  "zoom": {
     hidden: { scale: 0.5 },
     visible: {
       scale: 1,
       transition: { type: "spring", stiffness: 300, damping: 20 },
     },
   },
-  flip: {
+  "flip": {
     hidden: { rotateX: -90 },
     visible: {
       rotateX: 0,
       transition: { type: "spring", stiffness: 300, damping: 20 },
     },
   },
-  bounce: {
+  "bounce": {
     hidden: { y: -50 },
     visible: {
       y: 0,
       transition: { type: "spring", stiffness: 400, damping: 10 },
     },
   },
-  rotate: {
+  "rotate": {
     hidden: { rotate: -180 },
     visible: {
       rotate: 0,
       transition: { type: "spring", stiffness: 200, damping: 15 },
     },
   },
-  swing: {
+  "swing": {
     hidden: { rotate: -10 },
     visible: {
       rotate: 0,
@@ -94,10 +97,12 @@ const presetVariants: Record<PresetType, Variants> = {
   },
 };
 
-const addDefaultVariants = (variants: Variants) => ({
-  hidden: { ...defaultItemVariants.hidden, ...variants.hidden },
-  visible: { ...defaultItemVariants.visible, ...variants.visible },
-});
+function addDefaultVariants(variants: Variants) {
+  return {
+    hidden: { ...defaultItemVariants.hidden, ...variants.hidden },
+    visible: { ...defaultItemVariants.visible, ...variants.visible },
+  };
+}
 
 function AnimatedGroup({
   children,
@@ -116,11 +121,11 @@ function AnimatedGroup({
 
   const MotionComponent = React.useMemo(
     () => motion.create(as as keyof JSX.IntrinsicElements),
-    [as]
+    [as],
   );
   const MotionChild = React.useMemo(
     () => motion.create(asChild as keyof JSX.IntrinsicElements),
-    [asChild]
+    [asChild],
   );
 
   return (
@@ -128,11 +133,13 @@ function AnimatedGroup({
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className={className}>
+      className={className}
+    >
       {React.Children.map(children, (child, index) => (
         <MotionChild
           key={index}
-          variants={itemVariants}>
+          variants={itemVariants}
+        >
           {child}
         </MotionChild>
       ))}

@@ -1,14 +1,17 @@
-import DbCard from "@/components/db-card";
-import { TextAnimate } from "@/components/text/SplitText";
-import { AnimatedGroup } from "@/components/ui/animated-group";
-import { mongoClient } from "@/lib/mongodb";
-import type { BuildInfo } from "@/types/build-info";
-import { getDatabasesWithCollections } from "@/utils/getDatabasesWithCollections";
-import { getIronSessionData } from "@/utils/getIronSessionData";
 import prettyBytes from "pretty-bytes";
-export const dynamic = "force-dynamic";
+
+import type { BuildInfo } from "@/types/build-info";
 
 import BuildInfoC from "@/components/build-info";
+import DbCard from "@/components/db-card";
+import { TextAnimate } from "@/components/text/text-animate";
+import { AnimatedGroup } from "@/components/ui/animated-group";
+import { mongoClient } from "@/lib/mongodb";
+import { getDatabasesWithCollections } from "@/utils/get-databases-with-collections";
+import { getIronSessionData } from "@/utils/get-iron-session-data";
+
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   try {
     const uri = await getIronSessionData();
@@ -28,14 +31,16 @@ export default async function Home() {
             className="text-3xl font-bold"
             animation="scaleUp"
             by="text"
-            once>
+            once
+          >
             MongoDB status
           </TextAnimate>
           <TextAnimate
             className="text-sm text-neutral-500 mt-1"
             animation="scaleUp"
             by="text"
-            once>
+            once
+          >
             Quick snapshot of build information and databases.
           </TextAnimate>
         </header>
@@ -58,7 +63,8 @@ export default async function Home() {
             animation="scaleUp"
             by="text"
             once
-            className="text-xl font-semibold mb-4">
+            className="text-xl font-semibold mb-4"
+          >
             Databases
           </TextAnimate>
 
@@ -66,7 +72,8 @@ export default async function Home() {
             <TextAnimate
               animation="scaleUp"
               by="text"
-              once>
+              once
+            >
               {`Total size: ${prettyBytes(totalSize ?? 0)}`}
             </TextAnimate>
           </div>
@@ -96,26 +103,30 @@ export default async function Home() {
                   },
                 },
               },
-            }}>
-            {databases.length > 0 ? (
-              databases.map((d, i) => (
-                <DbCard
-                  key={d.name}
-                  collections={d.collections}
-                  name={d.name}
-                  sizeOnDisk={d.sizeOnDisk}
-                />
-              ))
-            ) : (
-              <p className="text-sm text-muted-foreground text-center col-span-full">
-                No databases found.
-              </p>
-            )}
+            }}
+          >
+            {databases.length > 0
+              ? (
+                  databases.map(d => (
+                    <DbCard
+                      key={d.name}
+                      collections={d.collections}
+                      name={d.name}
+                      sizeOnDisk={d.sizeOnDisk}
+                    />
+                  ))
+                )
+              : (
+                  <p className="text-sm text-muted-foreground text-center col-span-full">
+                    No databases found.
+                  </p>
+                )}
           </AnimatedGroup>
         </section>
       </main>
     );
-  } catch (error) {
+  }
+  catch (error) {
     console.error("Failed to load MongoDB info:", error);
     return (
       <div className="min-h-screen flex items-center justify-center p-8">

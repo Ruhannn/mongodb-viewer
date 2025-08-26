@@ -13,7 +13,7 @@ export async function getDatabasesWithCollections(url: string) {
       return {
         name: d.name,
         sizeOnDisk: d.sizeOnDisk ?? 0,
-        collections: collections.map((c) => c.name).join(", ") || "—",
+        collections: collections.map(c => c.name).join(", ") || "—",
       };
     }),
   );

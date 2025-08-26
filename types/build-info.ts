@@ -1,4 +1,4 @@
-export interface BuildInfo {
+export type BuildInfo = {
   version: string;
   gitVersion: string;
   modules: string[];
@@ -13,24 +13,24 @@ export interface BuildInfo {
   ok: number;
   $clusterTime: ClusterTime;
   operationTime: Time;
-}
+};
 
-interface ClusterTime {
+type ClusterTime = {
   clusterTime: Time;
   signature: Signature;
-}
+};
 
-interface Time {
+type Time = {
   $timestamp: string;
-}
+};
 
-interface Signature {
+type Signature = {
   hash: string;
   keyId: KeyID;
-}
+};
 
-interface KeyID {
+type KeyID = {
   low: number;
   high: number;
   unsigned: boolean;
-}
+};

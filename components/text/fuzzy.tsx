@@ -1,8 +1,7 @@
-'use client'
+"use client";
 import React, { useEffect, useRef } from "react";
 
-
-interface FuzzyTextProps {
+type FuzzyTextProps = {
   children: React.ReactNode;
   fontSize?: number | string;
   fontWeight?: string | number;
@@ -11,7 +10,7 @@ interface FuzzyTextProps {
   enableHover?: boolean;
   baseIntensity?: number;
   hoverIntensity?: number;
-}
+};
 
 const FuzzyText: React.FC<FuzzyTextProps> = ({
   children,
@@ -31,33 +30,37 @@ const FuzzyText: React.FC<FuzzyTextProps> = ({
     let animationFrameId: number;
     let isCancelled = false;
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas)
+      return;
 
     const init = async () => {
       if (document.fonts?.ready) {
         await document.fonts.ready;
       }
-      if (isCancelled) return;
+      if (isCancelled)
+        return;
 
       const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+      if (!ctx)
+        return;
 
-      const computedFontFamily =
-        fontFamily === "inherit"
+      const computedFontFamily
+        = fontFamily === "inherit"
           ? window.getComputedStyle(canvas).fontFamily || "sans-serif"
           : fontFamily;
 
-      const fontSizeStr =
-        typeof fontSize === "number" ? `${fontSize}px` : fontSize;
+      const fontSizeStr
+        = typeof fontSize === "number" ? `${fontSize}px` : fontSize;
       let numericFontSize: number;
       if (typeof fontSize === "number") {
         numericFontSize = fontSize;
-      } else {
+      }
+      else {
         const temp = document.createElement("span");
         temp.style.fontSize = fontSize;
         document.body.appendChild(temp);
         const computedSize = window.getComputedStyle(temp).fontSize;
-        numericFontSize = parseFloat(computedSize);
+        numericFontSize = Number.parseFloat(computedSize);
         document.body.removeChild(temp);
       }
 
@@ -65,7 +68,8 @@ const FuzzyText: React.FC<FuzzyTextProps> = ({
 
       const offscreen = document.createElement("canvas");
       const offCtx = offscreen.getContext("2d");
-      if (!offCtx) return;
+      if (!offCtx)
+        return;
 
       offCtx.font = `${fontWeight} ${fontSizeStr} ${computedFontFamily}`;
       offCtx.textBaseline = "alphabetic";
@@ -74,8 +78,8 @@ const FuzzyText: React.FC<FuzzyTextProps> = ({
       const actualLeft = metrics.actualBoundingBoxLeft ?? 0;
       const actualRight = metrics.actualBoundingBoxRight ?? metrics.width;
       const actualAscent = metrics.actualBoundingBoxAscent ?? numericFontSize;
-      const actualDescent =
-        metrics.actualBoundingBoxDescent ?? numericFontSize * 0.2;
+      const actualDescent
+        = metrics.actualBoundingBoxDescent ?? numericFontSize * 0.2;
 
       const textBoundingWidth = Math.ceil(actualLeft + actualRight);
       const tightHeight = Math.ceil(actualAscent + actualDescent);
@@ -107,12 +111,13 @@ const FuzzyText: React.FC<FuzzyTextProps> = ({
       const fuzzRange = 30;
 
       const run = () => {
-        if (isCancelled) return;
+        if (isCancelled)
+          return;
         ctx.clearRect(
           -fuzzRange,
           -fuzzRange,
           offscreenWidth + 2 * fuzzRange,
-          tightHeight + 2 * fuzzRange
+          tightHeight + 2 * fuzzRange,
         );
         const intensity = isHovering ? hoverIntensity : baseIntensity;
         for (let j = 0; j < tightHeight; j++) {
@@ -126,7 +131,7 @@ const FuzzyText: React.FC<FuzzyTextProps> = ({
             dx,
             j,
             offscreenWidth,
-            1
+            1,
           );
         }
         animationFrameId = window.requestAnimationFrame(run);
@@ -135,13 +140,14 @@ const FuzzyText: React.FC<FuzzyTextProps> = ({
       run();
 
       const isInsideTextArea = (x: number, y: number) =>
-        x >= interactiveLeft &&
-        x <= interactiveRight &&
-        y >= interactiveTop &&
-        y <= interactiveBottom;
+        x >= interactiveLeft
+        && x <= interactiveRight
+        && y >= interactiveTop
+        && y <= interactiveBottom;
 
       const handleMouseMove = (e: MouseEvent) => {
-        if (!enableHover) return;
+        if (!enableHover)
+          return;
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
@@ -153,7 +159,8 @@ const FuzzyText: React.FC<FuzzyTextProps> = ({
       };
 
       const handleTouchMove = (e: TouchEvent) => {
-        if (!enableHover) return;
+        if (!enableHover)
+          return;
         e.preventDefault();
         const rect = canvas.getBoundingClientRect();
         const touch = e.touches[0];

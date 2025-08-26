@@ -1,28 +1,30 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import type { MotionProps, Variants } from "framer-motion";
+import type { ElementType } from "react";
+
 import {
   AnimatePresence,
   motion,
-  type MotionProps,
-  type Variants,
 } from "framer-motion";
-import { type ElementType, memo } from "react";
+import { memo } from "react";
+
+import { cn } from "@/lib/utils";
 
 type AnimationType = "text" | "word" | "character" | "line";
-type AnimationVariant =
-  | "fadeIn"
-  | "blurIn"
-  | "blurInUp"
-  | "blurInDown"
-  | "slideUp"
-  | "slideDown"
-  | "slideLeft"
-  | "slideRight"
-  | "scaleUp"
-  | "scaleDown";
+type AnimationVariant
+  = | "fadeIn"
+    | "blurIn"
+    | "blurInUp"
+    | "blurInDown"
+    | "slideUp"
+    | "slideDown"
+    | "slideLeft"
+    | "slideRight"
+    | "scaleUp"
+    | "scaleDown";
 
-interface TextAnimateProps extends MotionProps {
+type TextAnimateProps = {
   /**
    * The text content to animate
    */
@@ -71,7 +73,7 @@ interface TextAnimateProps extends MotionProps {
    * Whether to enable accessibility features (default: true)
    */
   accessible?: boolean;
-}
+} & MotionProps;
 
 const staggerTimings: Record<AnimationType, number> = {
   text: 0.06,
@@ -306,7 +308,7 @@ const defaultItemAnimationVariants: Record<
   },
 };
 
-const TextAnimateBase = ({
+function TextAnimateBase({
   children,
   delay = 0,
   duration = 0.3,
@@ -320,7 +322,7 @@ const TextAnimateBase = ({
   animation = "fadeIn",
   accessible = true,
   ...props
-}: TextAnimateProps) => {
+}: TextAnimateProps) {
   const MotionComponent = motion.create(Component);
 
   let segments: string[] = [];
@@ -363,27 +365,27 @@ const TextAnimateBase = ({
         item: variants,
       }
     : animation
-    ? {
-        container: {
-          ...defaultItemAnimationVariants[animation].container,
-          show: {
-            ...defaultItemAnimationVariants[animation].container.show,
-            transition: {
-              delayChildren: delay,
-              staggerChildren: duration / segments.length,
+      ? {
+          container: {
+            ...defaultItemAnimationVariants[animation].container,
+            show: {
+              ...defaultItemAnimationVariants[animation].container.show,
+              transition: {
+                delayChildren: delay,
+                staggerChildren: duration / segments.length,
+              },
+            },
+            exit: {
+              ...defaultItemAnimationVariants[animation].container.exit,
+              transition: {
+                staggerChildren: duration / segments.length,
+                staggerDirection: -1,
+              },
             },
           },
-          exit: {
-            ...defaultItemAnimationVariants[animation].container.exit,
-            transition: {
-              staggerChildren: duration / segments.length,
-              staggerDirection: -1,
-            },
-          },
-        },
-        item: defaultItemAnimationVariants[animation].item,
-      }
-    : { container: defaultContainerVariants, item: defaultItemVariants };
+          item: defaultItemAnimationVariants[animation].item,
+        }
+      : { container: defaultContainerVariants, item: defaultItemVariants };
 
   return (
     <AnimatePresence mode="popLayout">
@@ -396,27 +398,28 @@ const TextAnimateBase = ({
         className={cn("whitespace-pre-wrap", className)}
         viewport={{ once }}
         aria-label={accessible ? children : undefined}
-        {...props}>
+        {...props}
+      >
         {accessible && <span className="sr-only">{children}</span>}
         {segments.map((segment, i) => (
           <motion.span
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
             key={`${by}-${segment}-${i}`}
             variants={finalVariants.item}
             custom={i * staggerTimings[by]}
             className={cn(
               by === "line" ? "block" : "inline-block whitespace-pre",
               by === "character" && "",
-              segmentClassName
+              segmentClassName,
             )}
-            aria-hidden={accessible ? true : undefined}>
+            aria-hidden={accessible ? true : undefined}
+          >
             {segment}
           </motion.span>
         ))}
       </MotionComponent>
     </AnimatePresence>
   );
-};
+}
 
 // Export the memoized version
 export const TextAnimate = memo(TextAnimateBase);

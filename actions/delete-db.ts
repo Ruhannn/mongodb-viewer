@@ -1,8 +1,9 @@
 "use server";
 
-import { mongoClient } from "@/lib/mongodb";
-import { getIronSessionData } from "@/utils/getIronSessionData";
 import { revalidatePath } from "next/cache";
+
+import { mongoClient } from "@/lib/mongodb";
+import { getIronSessionData } from "@/utils/get-iron-session-data";
 
 export async function handleDbDelete(dbName: string) {
   try {
@@ -16,7 +17,8 @@ export async function handleDbDelete(dbName: string) {
     }
 
     revalidatePath("/main");
-  } catch (error) {
+  }
+  catch (error) {
     console.error("Database deletion error:", error);
 
     throw new Error("Unknown error occurred while deleting database.");

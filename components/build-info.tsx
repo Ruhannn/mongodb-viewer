@@ -1,6 +1,7 @@
 "use client";
 
-import type { BuildInfo } from "@/types/build-info";
+import type { LucideIcon } from "lucide-react";
+
 import { motion } from "framer-motion";
 import {
   Boxes,
@@ -9,11 +10,14 @@ import {
   GitBranch,
   Info,
   Layers,
-  type LucideIcon,
+
   Package,
   Terminal,
 } from "lucide-react";
 import { useState } from "react";
+
+import type { BuildInfo } from "@/types/build-info";
+
 import { AnimatedGroup } from "./ui/animated-group";
 import { Card, CardContent, CardHeader } from "./ui/card";
 
@@ -40,7 +44,8 @@ export function BuildInfoItem({
   const handleClick = () => {
     if (!scattered) {
       setOffset(randomOffset());
-    } else {
+    }
+    else {
       setOffset({ x: 0, y: 0 });
     }
     setScattered(!scattered);
@@ -50,7 +55,8 @@ export function BuildInfoItem({
     <div className="flex items-center gap-2 ">
       <motion.div
         onClick={handleClick}
-        animate={offset}>
+        animate={offset}
+      >
         <Icon className="h-4 w-4 text-muted-foreground cursor-pointer" />
       </motion.div>
       <div>
@@ -59,7 +65,8 @@ export function BuildInfoItem({
           dragElastic={0.2}
           animate={offset}
           whileDrag={{ cursor: "grabbing" }}
-          className="text-xs text-muted-foreground">
+          className="text-xs text-muted-foreground"
+        >
           {label}
         </motion.dt>
 
@@ -68,7 +75,8 @@ export function BuildInfoItem({
           dragElastic={0.2}
           animate={offset}
           whileDrag={{ cursor: "grabbing" }}
-          className="font-medium truncate">
+          className="font-medium truncate"
+        >
           {value ?? "—"}
         </motion.dd>
       </div>
@@ -120,21 +128,22 @@ export default function BuildInfoC({
       <CardHeader className="text-xl font-semibold">
         Build information
       </CardHeader>
-      {version ? (
-        <AnimatedGroup className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm px-6">
-          {items.map((item, i) => (
-            <BuildInfoItem
-              // biome-ignore lint/suspicious/noArrayIndexKey: fds
-              key={i}
-              {...item}
-            />
-          ))}
-        </AnimatedGroup>
-      ) : (
-        <CardContent className="text-sm text-muted-foreground">
-          No build info available.
-        </CardContent>
-      )}
+      {version
+        ? (
+            <AnimatedGroup className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm px-6">
+              {items.map((item, i) => (
+                <BuildInfoItem
+                  key={i}
+                  {...item}
+                />
+              ))}
+            </AnimatedGroup>
+          )
+        : (
+            <CardContent className="text-sm text-muted-foreground">
+              No build info available.
+            </CardContent>
+          )}
     </Card>
   );
 }

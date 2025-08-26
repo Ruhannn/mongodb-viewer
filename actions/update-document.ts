@@ -1,9 +1,10 @@
 "use server";
 
-import { mongoClient } from "@/lib/mongodb";
-import { getIronSessionData } from "@/utils/getIronSessionData";
 import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
+
+import { mongoClient } from "@/lib/mongodb";
+import { getIronSessionData } from "@/utils/get-iron-session-data";
 
 export async function updateDocument({
   databaseName,
@@ -16,7 +17,6 @@ export async function updateDocument({
   collectionName: string;
   documentId: string;
   field: string;
-  // biome-ignore lint/suspicious/noExplicitAny: idk
   value: any;
 }) {
   const uri = await getIronSessionData();
