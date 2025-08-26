@@ -1,9 +1,9 @@
 "use server";
 
+import { mongoClient } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { mongoClient } from "@/lib/mongodb";
 
 export async function updateDocument({
   databaseName,
