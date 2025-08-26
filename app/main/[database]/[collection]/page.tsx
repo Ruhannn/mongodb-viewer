@@ -1,4 +1,6 @@
 import { EditableCell } from "@/components/editable-cell";
+import { TextAnimate } from "@/components/text/SplitText";
+import { AnimatedGroup } from "@/components/ui/animated-group";
 import {
   Pagination,
   PaginationContent,
@@ -49,18 +51,50 @@ export default async function Page({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-8">
-      <div className="mx-auto max-w-7xl">
+      <AnimatedGroup className="mx-auto max-w-7xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+          <TextAnimate
+            animation="scaleUp"
+            by="text"
+            once
+            className="text-3xl font-bold text-foreground mb-2">
             {collectionName}
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Database:{" "}
-            <span className="font-medium text-foreground">{databaseName}</span>
-          </p>
+          </TextAnimate>
+          <TextAnimate
+            animation="scaleUp"
+            by="text"
+            once
+            className="text-muted-foreground text-lg">
+            {`Database: ${databaseName}`}
+          </TextAnimate>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <AnimatedGroup
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+          variants={{
+            container: {
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.05,
+                },
+              },
+            },
+            item: {
+              hidden: { opacity: 0, y: 40, filter: "blur(4px)" },
+              visible: {
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+                transition: {
+                  duration: 1.2,
+                  type: "spring",
+                  bounce: 0.3,
+                },
+              },
+            },
+          }}>
           <div className="bg-card border rounded-lg p-4 shadow-sm">
             <p className="text-sm font-medium text-muted-foreground">
               Documents
@@ -93,7 +127,7 @@ export default async function Page({
               {currentPage} of {totalPages}
             </p>
           </div>
-        </div>
+        </AnimatedGroup>
 
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-foreground mb-2">
@@ -261,7 +295,7 @@ export default async function Page({
             </div>
           </div>
         )}
-      </div>
+      </AnimatedGroup>
     </div>
   );
 }

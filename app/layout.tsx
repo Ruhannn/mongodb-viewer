@@ -1,9 +1,9 @@
+import { ThemeSwitch } from "@/components/theme-switch";
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/provider/theme-provider";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
-import { ThemeSwitch } from "@/components/theme-switch";
-import { ThemeProvider } from "@/provider/theme-provider";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
@@ -21,10 +21,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning>
       <body className={`${openSans.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="light">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          disableTransitionOnChange>
           <ThemeSwitch />
+
           {children}
           <Toaster />
         </ThemeProvider>

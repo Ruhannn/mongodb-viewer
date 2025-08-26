@@ -1,6 +1,6 @@
 import DbCard from "@/components/db-card";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { TextAnimate } from "@/components/text/SplitText";
+import { AnimatedGroup } from "@/components/ui/animated-group";
 import { mongoClient } from "@/lib/mongodb";
 import type { BuildInfo } from "@/types/build-info";
 import { getDatabasesWithCollections } from "@/utils/getDatabasesWithCollections";
@@ -8,6 +8,7 @@ import { getIronSessionData } from "@/utils/getIronSessionData";
 import prettyBytes from "pretty-bytes";
 export const dynamic = "force-dynamic";
 
+import BuildInfoC from "@/components/build-info";
 export default async function Home() {
   try {
     const uri = await getIronSessionData();
@@ -21,57 +22,83 @@ export default async function Home() {
     const { databases, totalSize } = await getDatabasesWithCollections(uri);
 
     return (
-      <main className="min-h-screen p-8 flex flex-col items-center gap-8">
+      <main className="min-h-screen p-8 flex flex-col items-center gap-8 overflow-hidden">
         <header className="w-full max-w-3xl">
-          <h1 className="text-3xl font-bold">MongoDB status</h1>
-          <p className="text-sm text-neutral-500 mt-1">
+          <TextAnimate
+            className="text-3xl font-bold"
+            animation="scaleUp"
+            by="text"
+            once>
+            MongoDB status
+          </TextAnimate>
+          <TextAnimate
+            className="text-sm text-neutral-500 mt-1"
+            animation="scaleUp"
+            by="text"
+            once>
             Quick snapshot of build information and databases.
-          </p>
+          </TextAnimate>
         </header>
 
-        <Card className="w-full max-w-3xl">
-          <CardHeader className="text-xl font-semibold">
-            Build information
-          </CardHeader>
-          {buildInfo ? (
-            <CardContent className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-              <div>
-                <dt className="text-xs text-muted-foreground">Version</dt>
-                <dd className="font-medium">{buildInfo.version ?? "—"}</dd>
-              </div>
-              <div>
-                <dt className="text-xs text-muted-foreground">Allocator</dt>
-                <dd className="font-medium">{buildInfo.allocator ?? "—"}</dd>
-              </div>
-              <div>
-                <dt className="text-xs text-muted-foreground">Bits</dt>
-                <dd className="font-medium">{buildInfo.bits ?? "—"}</dd>
-              </div>
-              <div>
-                <dt className="text-xs text-muted-foreground">System info</dt>
-                <dd className="font-medium truncate">
-                  {buildInfo.sysInfo ?? "—"}
-                </dd>
-              </div>
-            </CardContent>
-          ) : (
-            <CardContent className="text-sm text-muted-foreground">
-              No build info available.
-            </CardContent>
-          )}
-        </Card>
-
+        {buildInfo && (
+          <BuildInfoC
+            version={buildInfo.version}
+            bits={buildInfo.bits}
+            ok={buildInfo.ok}
+            allocator={buildInfo.allocator}
+            sysInfo={buildInfo.sysInfo}
+            gitVersion={buildInfo.gitVersion}
+            modules={buildInfo.modules}
+            storageEngines={buildInfo.storageEngines}
+          />
+        )}
         {/* Databases */}
         <section className="w-full max-w-3xl rounded-2xl p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Databases</h2>
+          <TextAnimate
+            animation="scaleUp"
+            by="text"
+            once
+            className="text-xl font-semibold mb-4">
+            Databases
+          </TextAnimate>
 
           <div className="mb-4 text-sm">
-            <strong>Total size:</strong> {prettyBytes(totalSize ?? 0)}
+            <TextAnimate
+              animation="scaleUp"
+              by="text"
+              once>
+              {`Total size: ${prettyBytes(totalSize ?? 0)}`}
+            </TextAnimate>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full h-full">
+          <AnimatedGroup
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full h-full"
+            variants={{
+              container: {
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.05,
+                  },
+                },
+              },
+              item: {
+                hidden: { opacity: 0, y: 40, filter: "blur(4px)" },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                  transition: {
+                    duration: 1.2,
+                    type: "spring",
+                    bounce: 0.3,
+                  },
+                },
+              },
+            }}>
             {databases.length > 0 ? (
-              databases.map((d) => (
+              databases.map((d, i) => (
                 <DbCard
                   key={d.name}
                   collections={d.collections}
@@ -84,7 +111,7 @@ export default async function Home() {
                 No databases found.
               </p>
             )}
-          </div>
+          </AnimatedGroup>
         </section>
       </main>
     );

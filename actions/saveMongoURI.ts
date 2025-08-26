@@ -10,6 +10,8 @@ export async function saveMongoURI(uri: string) {
   }> = await getIronSession(await cookies(), {
     password: process.env.IRON_PASS!,
     cookieName: "mongo",
+    cookieOptions: {},
+    ttl: 60 * 60,
   });
 
   session.mongo = uri;
